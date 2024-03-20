@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <title>AA ComSci</title>
+    <body>
+           <h1>Anagrams</h1>
+            <button onclick="anagram()">Check Anagram</button>
+    </head>
+    <script>
+		
+        function anagram() {
+		var word1 = prompt("Enter the first word or phrase:");
+        var word2 = prompt("Enter the second word or phrase:");
+        var input1 = word1.replace(/\s/g, '').toLowerCase();
+        var input2 = word2.replace(/\s/g, '').toLowerCase();
+
+        if (input1.split('').sort().join('') === input2.split('').sort().join('')){
+			alert("The words "+ word1 +" and "+ word2 + " are anagrams!");
+          } else {
+            alert("The words "+ word1 +" and "+ word2 +" are not anagrams.");
+          }
+		
+        }
+
+    </script>
+</body>
+</html>
