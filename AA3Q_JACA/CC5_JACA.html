@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Coding Challenge 5
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                background-color: lightseagreen;
+            }
+           
+        </style>
+    </head>
+    <body>
+        <h1> Modified FLAMES </h1>
+
+        <button onclick="flames()">Match Names</button>
+        <h3 id="name"></h3>
+
+        <h4>FLAMES Result:</h4>
+        <h3 id="result"></h3>
+
+
+        <script>
+            function flames(){
+				var name1=prompt("Enter The First Name: ");
+				var name2=prompt("Enter The Second Name: ");
+				document.getElementById("name").innerHTML=name1 + " and " + name2;
+				function relationship(name1, name2){
+					var allName=name1 + name2;
+					var length=allName.length ;
+					var rel=Math.round(length % 6) + 1;
+					switch (rel){
+						case 1:
+							var rel1="Friends"
+							return rel1;
+							break;
+						case 2:
+							var rel1="Lovers"
+							return rel1;
+							break;
+						case 3:
+							var rel1="Aquintances"
+							return rel1;
+							break;
+						case 4:
+							var rel1="Marriage"
+							return rel1;
+							break;
+						case 5:
+							var rel1="Enemies"
+							return rel1;
+							break;
+						case 6:
+							var rel1="Sweethearts"
+							return rel1;
+							break;
+					}
+				}
+				document.getElementById("result").innerHTML=relationship(name1, name2);
+            }
+        </script>
+    </body>
+</html>
