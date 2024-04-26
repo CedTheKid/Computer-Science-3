@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<head>
+  <title>Inventory System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f9e8; 
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #ffffff; 
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    form {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .form-group {
+      width: calc(48%);
+    }
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      display: block;
+    }
+    input[type="text"], input[type="number"], input[type="submit"] {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: calc(48% - 5px);
+      box-sizing: border-box;
+    }
+    input[type="submit"] {
+      background-color: #4CAF50; 
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    input[type="submit"]:hover {
+      background-color: #45a049; 
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #2196F3; 
+      color: #fff;
+      cursor: pointer;
+    }
+    td {
+      background-color: #f9f9f9; 
+    }
+    #message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .success {
+      background-color: #4CAF50; 
+      color: #fff;
+    }
+    .error {
+      background-color: #F44336;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Inventory System</h1>
+    <form id="inventoryForm">
+      <div class="form-group">
+        <label for="itemName">Item Name:</label>
+        <input type="text" id="itemName" name="itemName" required>
+      </div>
+      <div class="form-group" id="quantityField">
+        <label for="itemQuantity">Quantity:</label>
+        <input type="number" id="itemQuantity" name="itemQuantity" min="1" required>
+      </div>
+      <input type="submit" name="submitAction" value="Add Item">
+      <input type="submit" name="submitAction" value="Add Quantity">
+      <input type="submit" name="submitAction" value="Remove Item">
+      <input type="submit" name="submitAction" value="Deduct Quantity">
+    </form>
+    <table id="inventoryTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Item Name</th>
+          <th onclick="sortTable(1)">Quantity</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryBody">
+      </tbody>
+    </table>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    var supply = [];
+
+    function addItem(name, num) {
+      var existingItem = supply.find(item => item.itemName === name);
+      if (existingItem) {
+        existingItem.noOfItem += num;
+        showMessage("Item quantity updated successfully.", true);
+      } else {
+        supply.push({ itemName: name, noOfItem: num });
+        showMessage("Item added successfully.", true);
+      }
+      displayItems();
+    }
+
+    function addNoOfItem(name, num) {
+      var item = supply.find(item => item.itemName === name);
+      if (item) {
+        item.noOfItem += num;
+        showMessage("Quantity updated successfully.", true);
+        displayItems();
+      } else {
+        showMessage("Item not found in inventory.", false);
+      }
+    }
+
+    function subNoOfItem(name, num) {
+      var item = supply.find(item => item.itemName === name);
+      if (item) {
+        if (item.noOfItem >= num) {
+          item.noOfItem -= num;
+          showMessage("Quantity deducted successfully.", true);
+        } else {
+          showMessage("Not enough quantity to deduct.", false);
+        }
+        displayItems();
+      } else {
+        showMessage("Item not found in inventory.", false);
+      }
+    }
+
+    function removeItem(name) {
+      var itemIndex = supply.findIndex(item => item.itemName === name);
+      if (itemIndex !== -1) {
+        supply.splice(itemIndex, 1);
+        showMessage("Item removed successfully.", true);
+        displayItems();
+      } else {
+        showMessage("Item not found in inventory.", false);
+      }
+    }
+
+    function displayItems() {
+      var tableBody = document.getElementById('inventoryBody');
+      tableBody.innerHTML = '';
+      supply.forEach(item => {
+        var row = `<tr><td>${item.itemName}</td><td>${item.noOfItem}</td></tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function showMessage(message, success) {
+      var messageElement = document.getElementById('message');
+      messageElement.textContent = message;
+      messageElement.className = success ? 'success' : 'error';
+      setTimeout(function() {
+        messageElement.textContent = '';
+      }, 3000);
+    }
+
+    document.getElementById('inventoryForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var itemName = document.getElementById('itemName').value;
+      var itemQuantity = parseInt(document.getElementById('itemQuantity').value);
+      var submitAction = event.submitter.value;
+      switch (submitAction) {
+        case 'Add Item':
+          addItem(itemName, itemQuantity);
+          break;
+        case 'Add Quantity':
+          addNoOfItem(itemName, itemQuantity);
+          break;
+        case 'Remove Item':
+          removeItem(itemName);
+          break;
+        case 'Deduct Quantity':
+          subNoOfItem(itemName, itemQuantity);
+          break;
+      }
+      if (submitAction !== 'Remove Item') {
+        this.reset();
+      }
+    });
+
+    function sortTable(columnIndex) {
+      var table, rows, switching, i, x, y, shouldSwitch;
+      table = document.getElementById("inventoryTable");
+      switching = true;
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("td")[columnIndex];
+          y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch= true;
+            break;
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+        }
+      }
+    }
+
+    displayItems();
+  </script>
+</body>
+</html>
